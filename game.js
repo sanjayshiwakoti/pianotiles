@@ -1,40 +1,88 @@
 ;
 (function () {
 
-    var game = new Phaser.Game(828, 600);
+    function post(path, params, method) {
+        method = method || "post"; // Set method to post by default if not specified.
 
-    this.score = 0;
-    var GRAVITYRATIO=0.05;
-    var TILE1GRAVITY;
-    var TILE2GRAVITY;
-    var TILE3GRAVITY;
-    
+        // The rest of this code assumes you are not using a library.
+        // It can be made less wordy if you use one.
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+
+        for (var key in params) {
+            if (params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                hiddenField.setAttribute("value", params[key]);
+
+                form.appendChild(hiddenField);
+            }
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    var game = new Phaser.Game(828, 600);
+    var scoreValue = 0;
+    var scoreText;
+    var GRAVITYRATIO = 0.10;
+    var TILEGRAVITY;
+
 
     var homeState = {
         preload: function () {
-                 TILE1GRAVITY=100;
-                 TILE2GRAVITY=200;
-                 TILE3GRAVITY=300;
+            TILEGRAVITY = 100;
         },
         create: function () {
             var button1 = game.add.text(game.world.centerX, game.world.centerY, 'Play', {
                 fill: '#fff'
             });
-            
-                var scoreText = game.add.text(game.world.centerX, game.world.top, 'Score: ' + this.score, {
-                    fill: '#FF0000'
-                });
-                 scoreText.inputEnabled = true;
-                
-            
-            
+            scoreText = game.add.text(game.world.centerX, game.world.top, 'Score: ' + scoreValue, {
+                fill: '#FF0000'
+            });
+            scoreText.inputEnabled = true;
+
             button1.anchor.setTo(0.5, 0.5);
             button1.inputEnabled = true;
-
             button1.events.onInputDown.add(function () {
                 game.state.start('playstate');
             }, this);
-           
+        },
+        update: function () {
+        }
+    };
+
+
+    var gameOverState = {
+        preload: function () {
+
+        },
+        create: function () {
+            var button1 = game.add.text(game.world.centerX, game.world.centerY, 'Play', {
+                fill: '#fff'
+            });
+            button1.anchor.setTo(0.5, 0.5);
+            button1.inputEnabled = true;
+            button1.events.onInputDown.add(function () {
+                game.state.start('playstate');
+            }, this);
+
+            var submitBtn = game.add.text(game.world.centerX, game.world.centerY + 50, 'Submit', {
+                fill: '#fff'
+            });
+
+            scoreText = game.add.text(game.world.centerX, game.world.top, 'Score: ' + scoreValue, {
+                fill: '#FF0000'
+            });
+            submitBtn.anchor.setTo(0.5, 0.5);
+            submitBtn.inputEnabled = true;
+            submitBtn.events.onInputDown.add(function () {
+                post('http://dev.jsgame.com/index.php', {game_id: '1', score: scoreValue})
+            }, this);
+
         },
         update: function () {
         }
@@ -42,137 +90,122 @@
     /**
      * Total number of tiles initialize
      */
-    this.tile1=null;
-    this.tile2=null;
-    this.tile3=null;
-    
-    this.base1Tile=null;
-    this.base2Tile=null;
-    this.base3Tile=null;
-
+    this.tile1 = null;
+    this.tile2 = null;
+    this.tile3 = null;
     var playState = {
-        score: 0,
         preload: function () {
             game.load.image('tile', 'assets/tile.png');
-            game.load.image('base', 'assets/tiles.png');
             game.load.image('bg', 'assets/gamebg.jpg');
+            scoreValue=0;
+            scoreText.text=scoreValue;
         },
-        createFirstTile:function(){
+        createRandom:function(){
+            var rnd=game.rnd.integerInRange(1, 3);
+        
+            if(rnd==1){
+                this.createFirstTile();
+            }else if(rnd==2){
+                this.createSecondTile();
+            }else if(rnd==3){
+                this.createThirdTile();
+            }
+        },
+        createFirstTile: function () {
             this.tile1 = game.add.sprite(0, 0, 'tile');
             game.physics.arcade.enable(this.tile1);
-            this.tile1.body.gravity.y = this.getRandom(100, 400);
-            TILE1GRAVITY=TILE1GRAVITY+(TILE1GRAVITY*GRAVITYRATIO);
+            this.tile1.body.gravity.y = TILEGRAVITY;
+            TILEGRAVITY = TILEGRAVITY + (TILEGRAVITY * GRAVITYRATIO);
         },
-        createSecondTile:function(){
+        createSecondTile: function () {
             this.tile2 = game.add.sprite(100, 0, 'tile');
             game.physics.arcade.enable(this.tile2);
-            this.tile2.body.gravity.y = this.getRandom(100, 400);
-            TILE2GRAVITY=TILE2GRAVITY+(TILE2GRAVITY*GRAVITYRATIO);
+            this.tile2.body.gravity.y = TILEGRAVITY;
+            TILEGRAVITY = TILEGRAVITY + (TILEGRAVITY * GRAVITYRATIO);
         },
-        createThirdTile:function(){
+        createThirdTile: function () {
             this.tile3 = game.add.sprite(200, 0, 'tile');
             game.physics.arcade.enable(this.tile3);
-            this.tile3.body.gravity.y = this.getRandom(100, 400);
-            TILE3GRAVITY=TILE3GRAVITY+(TILE3GRAVITY*GRAVITYRATIO);
+            this.tile3.body.gravity.y = TILEGRAVITY;
+            TILEGRAVITY = TILEGRAVITY + (TILEGRAVITY * GRAVITYRATIO);
         },
-       
-        destroyFirstTile:function(a, b){
-        
-        },
-        destroySecondTile:function(){
-             
-        },
-        destroyThirdTile:function(){
-            //  game.physics.arcade.collide(this.tile1, this.base3Tile, this.createThirdTile, null, this);
-            //  if(this.tile3.inWorld){
-            //      this.score++;
-            //     this.scoreText.text = 'Score:' +this.score;
-            //     this.tile3.destroy();
-            //     this.createThirdTile();
-            // }else{
-            //    this.deathHandler();
-           // }
-        },
-        
-        getRandom: function(max, min){
-          return Math.floor(Math.random() * (max -min + 1)) + min;
-        }, 
-
         create: function () {
-           
+
             this.bg = game.add.tileSprite(0, 0, 900, 612, 'bg');
+
+            game.physics.startSystem(Phaser.Physics.ARCADE);
             
-            this.base1Tile = game.add.sprite(0, 599, 'base');
-            this.base2Tile = game.add.sprite(100, 599, 'base');
-            this.base3Tile = game.add.sprite(200, 599, 'base');
-            
+            keyOne = this.input.keyboard.addKey(Phaser.Keyboard.ONE);
+            keyOne.onDown.add(this.destroyTile, this);
+            keyTwo = this.input.keyboard.addKey(Phaser.Keyboard.TWO);
+            keyTwo.onDown.add(this.destroyTile, this);
+            keyThree = this.input.keyboard.addKey(Phaser.Keyboard.THREE);
+            keyThree.onDown.add(this.destroyTile, this);
+
             this.createFirstTile();
-            this.createSecondTile();
-            this.createThirdTile();
             
-            game.physics.arcade.enable(this.base1Tile);
-            game.physics.arcade.enable(this.base2Tile);
-            game.physics.arcade.enable(this.base3Tile);
-
-
-            this.scoreText = game.add.text(game.world.centerX, game.world.top, 'Score: ' + this.score, {
+            scoreText = game.add.text(game.world.centerX, game.world.top, 'Score: ' + scoreValue, {
                 fill: '#FF0000'
             });
         },
-        update: function () { 
-        keyOne = this.input.keyboard.addKey(Phaser.Keyboard.ONE);
-        keyOne.onDown.add(this.gunfired,this);
-        keyTwo = this.input.keyboard.addKey(Phaser.Keyboard.TWO);
-        keyTwo.onDown.add(this.secondCollapse,this);
-        keyThree = this.input.keyboard.addKey(Phaser.Keyboard.THREE);
-        keyThree.onDown.add(this.thirdCollapse,this);
-         if (!this.tile1.inWorld && !this.tile2.inWorld && !this.tile3.inWorld) {
+        update: function () {
+            if (this.tile1) {
+                if (!this.tile1.inWorld) {
+                    this.tile1='';
+                    this.deathHandler();
+                }
+            }
+            if (this.tile2) {
+                if (!this.tile2.inWorld) {
+                    this.tile2='';
+                    this.deathHandler();
+                }
+            }
+            if (this.tile3) {
+                if (!this.tile3.inWorld) {
+                    this.tile3='';
+                    this.deathHandler();
+                }
+            }
+
+        },
+        destroyTile: function (key) {
+          
+             if (this.tile1&&key.keyCode==49) {
+                scoreValue++;
+                scoreText.text = 'Score:' + scoreValue;
+                this.tile1.destroy();
+                this.tile1='';
+                this.createRandom();  
+            }else if (this.tile2&&key.keyCode==50) {
+                scoreValue++;
+                scoreText.text = 'Score:' + scoreValue;
+                this.tile2.destroy();
+                this.tile2='';
+                this.createRandom(); 
+            }else if (this.tile3&&key.keyCode==51) {
+                scoreValue++;
+                scoreText.text = 'Score:' + scoreValue;
+                this.tile3.destroy();
+                this.tile3='';
+                this.createRandom(); 
+            }else{
                 this.deathHandler();
             }
-          },
-          thirdCollapse: function(key) {
-            var three = game.physics.arcade.overlap(this.tile3, this.base3Tile);
-            if (!three){
-               this.deathHandler();
-            }
-            else{
-              this.score++;
-              this.scoreText.text = 'Score:' +this.score;              
-              this.tile3.destroy();
-              this.createThirdTile();
-            }
-          },
-          secondCollapse: function(key) {
-            var two = game.physics.arcade.overlap(this.tile2, this.base2Tile);
-            if (!two){
-               this.deathHandler();
-            }
-            else{
-              this.score++;
-              this.scoreText.text = 'Score:' +this.score;
-              this.tile2.destroy();
-              this.createSecondTile();
-            }
-          },
-          gunfired: function(key) {
-            var one = game.physics.arcade.overlap(this.tile1, this.base1Tile);
-            if (!one ){
-               this.deathHandler();
-            }
-            else{
-              this.score++;
-              this.scoreText.text = 'Score:' +this.score;
-              this.tile1.destroy();
-              this.createFirstTile();
-          }  
+            
+            
         },
-      
         deathHandler: function () {
-            game.state.start('homestate');
+            this.tile1='';
+            this.tile2='';
+            this.tile3='';
+            TILEGRAVITY=100;
+            game.state.start('gameover');
         }
     };
     game.state.add("playstate", playState);
     game.state.add("homestate", homeState);
+    game.state.add("gameover", gameOverState);
     game.state.start('homestate');
 
 })();
