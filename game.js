@@ -25,10 +25,10 @@
         form.submit();
     }
 
-    var game = new Phaser.Game(828, 600);
+    var game = new Phaser.Game(400, 600);
     var scoreValue = 0;
     var scoreText;
-    var GRAVITYRATIO = 0.10;
+    var GRAVITYRATIO = 0.05;
     var TILEGRAVITY;
 
 
@@ -93,6 +93,7 @@
     this.tile1 = null;
     this.tile2 = null;
     this.tile3 = null;
+     this.tile4 = null;
     var playState = {
         preload: function () {
             game.load.image('tile', 'assets/tile.png');
@@ -101,7 +102,7 @@
             scoreText.text=scoreValue;
         },
         createRandom:function(){
-            var rnd=game.rnd.integerInRange(1, 3);
+            var rnd=game.rnd.integerInRange(1, 4);
         
             if(rnd==1){
                 this.createFirstTile();
@@ -109,6 +110,8 @@
                 this.createSecondTile();
             }else if(rnd==3){
                 this.createThirdTile();
+            }else if(rnd==4){
+                this.createFourthTile();
             }
         },
         createFirstTile: function () {
@@ -129,6 +132,12 @@
             this.tile3.body.gravity.y = TILEGRAVITY;
             TILEGRAVITY = TILEGRAVITY + (TILEGRAVITY * GRAVITYRATIO);
         },
+        createFourthTile: function () {
+            this.tile4 = game.add.sprite(300, 0, 'tile');
+            game.physics.arcade.enable(this.tile4);
+            this.tile4.body.gravity.y = TILEGRAVITY;
+            TILEGRAVITY = TILEGRAVITY + (TILEGRAVITY * GRAVITYRATIO);
+        },
         create: function () {
 
             this.bg = game.add.tileSprite(0, 0, 900, 612, 'bg');
@@ -141,6 +150,8 @@
             keyTwo.onDown.add(this.destroyTile, this);
             keyThree = this.input.keyboard.addKey(Phaser.Keyboard.THREE);
             keyThree.onDown.add(this.destroyTile, this);
+             keyFour = this.input.keyboard.addKey(Phaser.Keyboard.FOUR);
+            keyFour.onDown.add(this.destroyTile, this);
 
             this.createFirstTile();
             
@@ -167,6 +178,12 @@
                     this.deathHandler();
                 }
             }
+            if (this.tile4) {
+                if (!this.tile4.inWorld) {
+                    this.tile4='';
+                    this.deathHandler();
+                }
+            }
 
         },
         destroyTile: function (key) {
@@ -189,6 +206,12 @@
                 this.tile3.destroy();
                 this.tile3='';
                 this.createRandom(); 
+            }else if (this.tile4&&key.keyCode==52) {
+                scoreValue++;
+                scoreText.text = 'Score:' + scoreValue;
+                this.tile4.destroy();
+                this.tile4='';
+                this.createRandom(); 
             }else{
                 this.deathHandler();
             }
@@ -199,6 +222,7 @@
             this.tile1='';
             this.tile2='';
             this.tile3='';
+             this.tile4='';
             TILEGRAVITY=100;
             game.state.start('gameover');
         }
