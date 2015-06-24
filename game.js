@@ -1,37 +1,19 @@
 ;
 (function () {
-
-    function post(path, params, method) {
-        method = method || "post"; // Set method to post by default if not specified.
-
-        // The rest of this code assumes you are not using a library.
-        // It can be made less wordy if you use one.
-        var form = document.createElement("form");
-        form.setAttribute("method", method);
-        form.setAttribute("action", path);
-
-        for (var key in params) {
-            if (params.hasOwnProperty(key)) {
-                var hiddenField = document.createElement("input");
-                hiddenField.setAttribute("type", "hidden");
-                hiddenField.setAttribute("name", key);
-                hiddenField.setAttribute("value", params[key]);
-
-                form.appendChild(hiddenField);
-            }
-        }
-
-        document.body.appendChild(form);
-        form.submit();
-    }
-
-    var game = new Phaser.Game(400, 600);
+ var game = new Phaser.Game(400, 600);
+    /*
+    var lineA=new Phaser.Line(0,100,600,100);
+    var lineB=new Phaser.Line(0,200,600,200);
+    var lineC=new Phaser.Line(0,300,600,300);
+    
+     var lineD=new Phaser.Line(0,400,600,300);
+      var lineE=new Phaser.Line(0,0,600,0);
+      */
     var scoreValue = 0;
     var scoreText;
     var GRAVITYRATIO = 0.05;
     var TILEGRAVITY;
-
-
+    
     var homeState = {
         preload: function () {
             TILEGRAVITY = 100;
@@ -80,7 +62,8 @@
             submitBtn.anchor.setTo(0.5, 0.5);
             submitBtn.inputEnabled = true;
             submitBtn.events.onInputDown.add(function () {
-                post('http://dev.jsgame.com/index.php', {game_id: '1', score: scoreValue})
+                submitScore();
+                  game.state.start('homestate');
             }, this);
 
         },
@@ -224,6 +207,7 @@
             this.tile3='';
              this.tile4='';
             TILEGRAVITY=100;
+            $('#score').val(scoreValue);
             game.state.start('gameover');
         }
     };

@@ -1,11 +1,25 @@
+<!--
+  Copyright (c) 2011 Google Inc.
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not
+  use this file except in compliance with the License. You may obtain a copy of
+  the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  License for the specific language governing permissions and limitations under
+  the License.
+  To run this sample, replace YOUR API KEY with your application's API key.
+  It can be found at https://code.google.com/apis/console/?api=plus under API Access.
+  Activate the Google+ service at https://code.google.com/apis/console/ under Services
+-->
+<!DOCTYPE html>
 <html>
-<head>
-    <link rel="stylesheet" type="text/css" href="game.css">
-    <script type="text/javascript" src="phaser.js"></script>
-    <script type="text/javascript" src="game.js"></script>
-</head>
-<body>
-     <!--Add a button for the user to click to initiate auth sequence -->
+  <head>
+    <meta charset='utf-8' />
+  </head>
+  <body>
+    <!--Add a button for the user to click to initiate auth sequence -->
     <button id="authorize-button" style="visibility: hidden">Authorize</button>
     <script type="text/javascript">
       // Enter a client ID for a web application from the Google Developer Console.
@@ -63,20 +77,13 @@
             document.getElementById('google_name').value=resp.displayName;
             document.getElementById('profile_url').value=resp.url;
             document.getElementById('profile_image_url').value=resp.cover.coverPhoto.url;
+             document.getElementById('score').value=33;
           });
         });
       }
       
      function submitScore(){
          var form = $("#gamescore");
-         if($('#google_id').val()==''){
-             alert('Please Authorize before submitting score.');
-             return false;
-         }
-         if($('#score').val()==''){
-             alert('Please play the game to set score.');
-             return false;
-         }
          var formData = form.serialize()
           $.ajax({
                         type: "post",
@@ -85,27 +92,27 @@
                         },
                         dataType: "Json",
                         success: function (response) {
-                           alert(response.message);
-                           $('#score').val('');
+                           
                         },
                         error: function () {
                             alert('There was Problem')
                         }
                     });
      }
-    
     </script>
     <script src="jquery.js"></script>
     <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
     <div id="content"></div>
+    <p>Retrieves your profile name using the Google Plus API.</p>
     <form name="gamescore" id="gamescore" method="post" onsubmit="return false;">
-    <input type="hidden" name="game_id" id="game_id" value="1" />
-    <input type="hidden" name="email" id="email"  />
-    <input type="hidden" name="google_id" id="google_id" />
-     <input type="hidden" name="google_name" id="google_name" />
-      <input type="hidden" name="profile_url" id="profile_url" />
-        <input type="hidden" name="profile_image_url" id="profile_image_url" />
-     <input type="hidden" name="score" id="score" />
+    <input type="text" name="game_id" id="game_id" value="1" />
+    <input type="text" name="email" id="email"  />
+    <input type="text" name="google_id" id="google_id" />
+     <input type="text" name="google_name" id="google_name" />
+      <input type="text" name="profile_url" id="profile_url" />
+        <input type="text" name="profile_image_url" id="profile_image_url" />
+     <input type="text" name="score" id="score" />
+     <input type="submit" value="submit" id="submit" onclick="submitScore();" />
     </form>
-</body>
+  </body>
 </html>
