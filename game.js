@@ -1,6 +1,6 @@
 ;
 (function () {
- var game = new Phaser.Game(400, 600);
+ var game = new Phaser.Game(400, 600,Phaser.AUTO,'piano-tile');
     /*
     var lineA=new Phaser.Line(0,100,600,100);
     var lineB=new Phaser.Line(0,200,600,200);
