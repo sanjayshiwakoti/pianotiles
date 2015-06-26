@@ -62,8 +62,9 @@
             submitBtn.anchor.setTo(0.5, 0.5);
             submitBtn.inputEnabled = true;
             submitBtn.events.onInputDown.add(function () {
-                submitScore();
+                if(submitScore()){
                   game.state.start('homestate');
+              }
             }, this);
 
         },
