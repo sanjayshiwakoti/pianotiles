@@ -16,7 +16,7 @@
     
     var homeState = {
         preload: function () {
-            TILEGRAVITY = 100;
+            TILEGRAVITY = 50;
         },
         create: function () {
             var button1 = game.add.text(game.world.centerX, game.world.centerY, 'Play', {
@@ -137,7 +137,7 @@
              keyFour = this.input.keyboard.addKey(Phaser.Keyboard.FOUR);
             keyFour.onDown.add(this.destroyTile, this);
 
-            this.createFirstTile();
+            this.createRandom();
             
             scoreText = game.add.text(game.world.centerX, game.world.top, 'Score: ' + scoreValue, {
                 fill: '#FF0000'
@@ -172,25 +172,25 @@
         },
         destroyTile: function (key) {
           
-             if (this.tile1&&key.keyCode==49) {
+             if (this.tile1&&key.keyCode==49&&this.tile1.y>=400) {
                 scoreValue++;
                 scoreText.text = 'Score:' + scoreValue;
                 this.tile1.destroy();
                 this.tile1='';
                 this.createRandom();  
-            }else if (this.tile2&&key.keyCode==50) {
+            }else if (this.tile2&&key.keyCode==50&&this.tile2.y>=400) {
                 scoreValue++;
                 scoreText.text = 'Score:' + scoreValue;
                 this.tile2.destroy();
                 this.tile2='';
                 this.createRandom(); 
-            }else if (this.tile3&&key.keyCode==51) {
+            }else if (this.tile3&&key.keyCode==51&&this.tile3.y>=400) {
                 scoreValue++;
                 scoreText.text = 'Score:' + scoreValue;
                 this.tile3.destroy();
                 this.tile3='';
                 this.createRandom(); 
-            }else if (this.tile4&&key.keyCode==52) {
+            }else if (this.tile4&&key.keyCode==52&&this.tile4.y>=400) {
                 scoreValue++;
                 scoreText.text = 'Score:' + scoreValue;
                 this.tile4.destroy();
