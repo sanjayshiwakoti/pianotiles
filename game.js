@@ -78,14 +78,17 @@
     this.tile2 = null;
     this.tile3 = null;
      this.tile4 = null;
+     this.basetile=null;
     var playState = {
         preload: function () {
             game.load.image('tile', 'assets/tile.png');
             game.load.image('bg', 'assets/gamebg.jpg');
+             game.load.image('basetile', 'assets/basetile.png');
             scoreValue=0;
             scoreText.text=scoreValue;
         },
         createRandom:function(){
+          
             var rnd=game.rnd.integerInRange(1, 4);
         
             if(rnd==1){
@@ -125,6 +128,7 @@
         create: function () {
 
             this.bg = game.add.tileSprite(0, 0, 900, 612, 'bg');
+            this.basetile = game.add.tileSprite(0,500,600, 500, 'basetile');
 
             game.physics.startSystem(Phaser.Physics.ARCADE);
             
@@ -138,6 +142,7 @@
             keyFour.onDown.add(this.destroyTile, this);
 
             this.createRandom();
+            
             
             scoreText = game.add.text(game.world.centerX, game.world.top, 'Score: ' + scoreValue, {
                 fill: '#FF0000'
@@ -171,26 +176,31 @@
 
         },
         destroyTile: function (key) {
+            
           
-             if (this.tile1&&key.keyCode==49&&this.tile1.y>=400) {
+             if (this.tile1&&key.keyCode==49&&this.tile1.y>=350) {
+                 console.log(this.tile1.y);
                 scoreValue++;
                 scoreText.text = 'Score:' + scoreValue;
                 this.tile1.destroy();
                 this.tile1='';
                 this.createRandom();  
-            }else if (this.tile2&&key.keyCode==50&&this.tile2.y>=400) {
+            }else if (this.tile2&&key.keyCode==50&&this.tile2.y>=350) {
+                console.log(this.tile2.y);
                 scoreValue++;
                 scoreText.text = 'Score:' + scoreValue;
                 this.tile2.destroy();
                 this.tile2='';
                 this.createRandom(); 
-            }else if (this.tile3&&key.keyCode==51&&this.tile3.y>=400) {
+            }else if (this.tile3&&key.keyCode==51&&this.tile3.y>=350) {
+                console.log(this.tile3.y);
                 scoreValue++;
                 scoreText.text = 'Score:' + scoreValue;
                 this.tile3.destroy();
                 this.tile3='';
                 this.createRandom(); 
-            }else if (this.tile4&&key.keyCode==52&&this.tile4.y>=400) {
+            }else if (this.tile4&&key.keyCode==52&&this.tile4.y>=350) {
+                console.log(this.tile4.y);
                 scoreValue++;
                 scoreText.text = 'Score:' + scoreValue;
                 this.tile4.destroy();
@@ -207,7 +217,7 @@
             this.tile2='';
             this.tile3='';
              this.tile4='';
-            TILEGRAVITY=100;
+            TILEGRAVITY=50;
             $('#score').val(scoreValue);
             game.state.start('gameover');
         }
