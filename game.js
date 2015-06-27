@@ -1,14 +1,6 @@
 ;
 (function () {
  var game = new Phaser.Game(400, 600,Phaser.AUTO,'piano-tile');
-    /*
-    var lineA=new Phaser.Line(0,100,600,100);
-    var lineB=new Phaser.Line(0,200,600,200);
-    var lineC=new Phaser.Line(0,300,600,300);
-    
-     var lineD=new Phaser.Line(0,400,600,300);
-      var lineE=new Phaser.Line(0,0,600,0);
-      */
     var scoreValue = 0;
     var scoreText;
     var GRAVITYRATIO = 0.05;
@@ -20,7 +12,7 @@
         },
         create: function () {
             var button1 = game.add.text(game.world.centerX, game.world.centerY, 'Play', {
-                fill: '#fff'
+                fill: '#fff',fontSize:'35px'
             });
             scoreText = game.add.text(game.world.centerX, game.world.top, 'Score: ' + scoreValue, {
                 fill: '#FF0000'
@@ -32,6 +24,11 @@
             button1.events.onInputDown.add(function () {
                 game.state.start('playstate');
             }, this);
+            
+             var gameName = game.add.text(game.world.centerX, game.world.centerY+35, 'Piano Tiles', {
+                fill: '#fff',fontSize:'35px'
+            });
+            gameName.anchor.setTo(0.5, 0.5);
         },
         update: function () {
         }
