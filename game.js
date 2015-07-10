@@ -6,7 +6,46 @@
     var GRAVITYRATIO = 0.05;
     var TILEGRAVITY;
     
-    var instructionState = {
+    var highScoreState = {
+        preload: function () {
+            
+        },
+        create: function () {
+            var button1 = game.add.text(game.world.centerX, game.world.centerY+30, 'Back', {
+                fill: '#fff',fontSize:'35px'
+            });
+            var highScore;
+            $.ajax({
+                        type: "post",
+                        url: "http://ribbit.lftechnology.com/api/highscore.php?game_id=1",
+                        dataType: "Json",
+                        success: function (response) {
+                        
+                               highScore='Name:'+response[0].google_email+'\nScore:'+response[0].score+'\n';
+                          
+                           
+                             highScoreText = game.add.text(0, 60, highScore, {
+                        fill: '#FF0000',fontSize:'18px'
+                    });
+                        },
+                        error: function () {
+                            alert('There was Problem')
+                        }
+                    });
+          
+            
+
+            button1.anchor.setTo(0.5, 0.5);
+            button1.inputEnabled = true;
+            button1.events.onInputDown.add(function () {
+                game.state.start('homestate');
+            }, this);
+        },
+        update: function () {
+        }
+    };
+    
+     var instructionState = {
         preload: function () {
             
         },
@@ -43,6 +82,10 @@
                 fill: '#fff',fontSize:'35px'
             });
             
+              var highScoreButton = game.add.text(game.world.centerX, game.world.centerY+75, 'High Scores', {
+                fill: '#fff',fontSize:'35px'
+            });
+            
             scoreText = game.add.text(game.world.centerX, game.world.top, 'Score: ' + scoreValue, {
                 fill: '#FF0000'
             });
@@ -58,6 +101,12 @@
             instructionButton.inputEnabled = true;
             instructionButton.events.onInputDown.add(function () {
                 game.state.start('instructionstate');
+            }, this);
+            
+             highScoreButton.anchor.setTo(0.5, 0.5);
+            highScoreButton.inputEnabled = true;
+            highScoreButton.events.onInputDown.add(function () {
+                game.state.start('highscorestate');
             }, this);
             
              var gameName = game.add.text(game.world.centerX, 100, 'Piano Tiles', {
@@ -255,6 +304,7 @@
     game.state.add("homestate", homeState);
     game.state.add("gameover", gameOverState);
     game.state.add("instructionstate", instructionState);
+     game.state.add("highscorestate", highScoreState);
     game.state.start('homestate');
 
 })();
