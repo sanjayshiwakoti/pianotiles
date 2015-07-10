@@ -54,7 +54,7 @@
             if(resp.url){
                  document.getElementById('profile_url').value=resp.url;
             }
-           if(resp.cover.coverPhoto.url){
+           if(resp.cover){
             document.getElementById('profile_image_url').value=resp.cover.coverPhoto.url;
         }
           });
