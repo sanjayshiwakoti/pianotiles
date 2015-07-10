@@ -74,7 +74,7 @@
          var formData = form.serialize()
           $.ajax({
                         type: "post",
-                        url: "http://ribbit.lftechnology.com/apis/insertScore.php",
+                        url: "http://ribbit.lftechnology.com/apis/insertscore.php",
                         data: {formData: formData
                         },
                         dataType: "Json",
