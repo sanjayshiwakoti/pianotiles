@@ -6,6 +6,30 @@
     var GRAVITYRATIO = 0.05;
     var TILEGRAVITY;
     
+    var instructionState = {
+        preload: function () {
+            
+        },
+        create: function () {
+            var button1 = game.add.text(game.world.centerX, game.world.centerY+30, 'Back', {
+                fill: '#fff',fontSize:'35px'
+            });
+            var instruction='Instructions\nBreak the tiles while in the green zone.\nThere are four grid where tiles will drop.\n\nControls\nPress key 1 for first grid.\nPress key 2 for second grid.\nPress key 3 for third grid.\nPress key 4 for fourth grid.';
+            instructionText = game.add.text(0, 60, instruction, {
+                fill: '#FF0000',fontSize:'18px'
+            });
+            
+
+            button1.anchor.setTo(0.5, 0.5);
+            button1.inputEnabled = true;
+            button1.events.onInputDown.add(function () {
+                game.state.start('homestate');
+            }, this);
+        },
+        update: function () {
+        }
+    };
+    
     var homeState = {
         preload: function () {
             TILEGRAVITY = 100;
@@ -14,6 +38,11 @@
             var button1 = game.add.text(game.world.centerX, game.world.centerY, 'Play', {
                 fill: '#fff',fontSize:'35px'
             });
+            
+             var instructionButton = game.add.text(game.world.centerX, game.world.centerY+35, 'Instructions', {
+                fill: '#fff',fontSize:'35px'
+            });
+            
             scoreText = game.add.text(game.world.centerX, game.world.top, 'Score: ' + scoreValue, {
                 fill: '#FF0000'
             });
@@ -25,7 +54,13 @@
                 game.state.start('playstate');
             }, this);
             
-             var gameName = game.add.text(game.world.centerX, game.world.centerY+35, 'Piano Tiles', {
+             instructionButton.anchor.setTo(0.5, 0.5);
+            instructionButton.inputEnabled = true;
+            instructionButton.events.onInputDown.add(function () {
+                game.state.start('instructionstate');
+            }, this);
+            
+             var gameName = game.add.text(game.world.centerX, 100, 'Piano Tiles', {
                 fill: '#fff',fontSize:'35px'
             });
             gameName.anchor.setTo(0.5, 0.5);
@@ -219,6 +254,7 @@
     game.state.add("playstate", playState);
     game.state.add("homestate", homeState);
     game.state.add("gameover", gameOverState);
+    game.state.add("instructionstate", instructionState);
     game.state.start('homestate');
 
 })();
